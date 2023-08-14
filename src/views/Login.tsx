@@ -1,36 +1,34 @@
-import { useState } from "react";
+import { proxy, useSnapshot } from "valtio";
+import User from "../entity/user/User";
+import { useRef } from "react";
+import LoginViewModel from "../viewmodel/LoginViewModel";
+import { container } from "tsyringe";
+import UserRepository from "../repository/UserRepository";
 
 export default function Login() {
-  const [user, setUser] = useState({
-    id: 1,
-    name: "pongchul",
-    email: "asdfg12@google.com",
-    level: 10, // There are 1 to 10 and 1 is the best.
-    gender: "MALE",
-    age: 29,
-    address: "",
-  });
+  const model = useRef(proxy(new LoginViewModel())).current;
+  const state = useSnapshot(model);
+  const userRepository = container.resolve(UserRepository);
 
   const edit = () => {
-    setUser({ ...user, name: "poooongchul" });
+    console.log(">>>>", userRepository);
+    userRepository.getUser();
   };
 
   const login = () => {};
 
   return (
     <div>
-      <div>id: {user.id}</div>
-      <div>name: {user.name}</div>
-      <div>email: {user.email}</div>
-      <div>level: {user.level}</div>
-      <div>gender: {user.gender}</div>
-      <div>age: {user.age}</div>
+      <p>{state.loading ? "로딩중" : "로딩아님"}</p>
+      <div>id: {state.user.id}</div>
+      <div>name: {state.user.name}</div>
+      <div>email: {state.user.email}</div>
+      <div>level: {state.user.level}</div>
+      <div>gender: {state.user.gender.title}</div>
+      <div>age: {state.user.age}</div>
 
-      {user.age >= 30 ? (
-        <div style={{ backgroundColor: "blue" }}> age: {user.age}</div>
-      ) : (
-        <div style={{ backgroundColor: "black" }}> age : {user.age}</div>
-      )}
+      <p>{state.user.getAdultLabel()}</p>
+
       <button onClick={() => edit()}> 수정 </button>
     </div>
   );
