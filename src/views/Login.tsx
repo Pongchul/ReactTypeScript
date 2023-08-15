@@ -11,7 +11,6 @@ export default function Login() {
   const userRepository = container.resolve(UserRepository);
 
   const edit = () => {
-    console.log(">>>>", userRepository);
     userRepository.getUser();
   };
 
