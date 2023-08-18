@@ -1,15 +1,16 @@
 import axios, { AxiosInstance } from "axios";
 import AxiosClient from "../components/network/AxiosClient";
-import { singleton } from "tsyringe";
+import { inject, singleton } from "tsyringe";
+import type HttpRepository from "./HttpRepository";
 
 @singleton()
 export default class UserRepository {
-  private readonly client: AxiosClient;
-  public constructor(client: AxiosClient) {
+  private readonly client: HttpRepository;
+  public constructor(@inject(AxiosClient) client: HttpRepository) {
     this.client = client;
   }
 
-  public getUser() {
+  public getUser(): Promise<String> {
     return this.client.get("http://localhost:3000");
   }
 }
